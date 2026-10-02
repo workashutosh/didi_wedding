@@ -5,6 +5,7 @@ import { Divider } from '../components/art/Ornaments'
 import { fx, gsap, ScrollTrigger, scrollToTop, useGsap } from '../lib/scroll'
 import { fxBudget, isSmall, reducedMotion } from '../lib/env'
 import { music } from '../lib/audio'
+import { Sparkles } from '../components/Sparkles'
 
 /* ───────── fireworks: runs only while the section is on screen ───────── */
 type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; c: string; px: number; py: number }
@@ -160,6 +161,7 @@ export function Closing() {
 
       <div className="relative grid w-[min(78vw,380px)] place-items-center">
         <Mandala className="cl-mandala absolute inset-0 h-full w-full" drawable strokeWidth={0.7} />
+        <Sparkles className="absolute inset-0" count={6} seed={9} />
         <div className="cl-mono relative flex aspect-square items-center justify-center font-script text-[clamp(4.2rem,20vw,7.5rem)] leading-none">
           <span className="gold-foil">{bride.initial}</span>
           <span className="mx-1 text-[0.42em] text-sindoor drop-shadow-[0_0_14px_rgba(227,54,79,.8)]">❤</span>

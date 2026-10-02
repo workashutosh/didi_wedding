@@ -51,9 +51,9 @@ export function Ganesh({ opened }: { opened: boolean }) {
   useEffect(() => {
     if (!opened || reducedMotion || !root.current) return
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.85 })
+      const tl = gsap.timeline({ delay: 0.4 })
       tl.to('.g-halo', { autoAlpha: 1, scale: 1, duration: 2.4, ease: 'expo.out' })
-        .to('.g-lines .draw', { strokeDashoffset: 0, duration: 1.1, stagger: 0.055, ease: 'power2.inOut' }, 0.15)
+        .to('.g-lines .draw', { strokeDashoffset: 0, duration: 0.9, stagger: 0.035, ease: 'power2.inOut' }, 0.1)
         .to('.g-lines path[fill]', { fillOpacity: 0.9, duration: 0.6, stagger: 0.05 }, '-=0.6')
         .to('.g-tilak', { scale: 1, duration: 0.7, ease: 'back.out(3)' }, '-=0.4')
         .to('.gn-title', { autoAlpha: 1, y: 0, duration: 1.4, ease: 'expo.out' }, '-=0.5')
@@ -70,6 +70,15 @@ export function Ganesh({ opened }: { opened: boolean }) {
         <div
           className="gn-glow pointer-events-none absolute left-1/2 top-[38%] h-[90vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50"
           style={{ background: 'radial-gradient(circle, rgba(244,163,0,.28), rgba(179,18,46,.12) 45%, transparent 70%)' }}
+          aria-hidden
+        />
+        <div
+          className="gn-rays spin-slow pointer-events-none absolute left-1/2 top-[34%] h-[120vmax] w-[120vmax] -translate-x-1/2 -translate-y-1/2 opacity-60"
+          style={{
+            background: 'repeating-conic-gradient(from 0deg, rgba(255,214,120,.16) 0deg 4deg, transparent 4deg 15deg)',
+            WebkitMaskImage: 'radial-gradient(closest-side, #000 8%, transparent 62%)',
+            maskImage: 'radial-gradient(closest-side, #000 8%, transparent 62%)',
+          }}
           aria-hidden
         />
         <div className="gn-art relative will-change-transform w-[min(70vw,42svh,400px)]">

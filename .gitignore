@@ -6,3 +6,9 @@ dist
 .ssr
 *.tsbuildinfo
 .claude
+
+# source/reference files (derived assets live in src/assets)
+*.mp4
+groom_and_bride_hand.png
+elements_for_help.svg
+elements_2.svg

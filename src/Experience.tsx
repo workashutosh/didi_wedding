@@ -7,6 +7,7 @@ import { MusicToggle, PointerFX, ScrollProgress } from './components/Chrome'
 import { Ganesh } from './sections/Ganesh'
 import { Invitation } from './sections/Invitation'
 import { Couple } from './sections/Couple'
+import { HastaMilap } from './sections/HastaMilap'
 import { SaveTheDate } from './sections/SaveTheDate'
 import { Ceremonies } from './sections/Ceremonies'
 import { Venue } from './sections/Venue'
@@ -52,6 +53,7 @@ export default function Experience({ opened }: { opened: boolean }) {
         <Ganesh opened={opened} />
         <Invitation />
         <Couple />
+        <HastaMilap />
         <SaveTheDate />
         <Ceremonies />
         <Venue />

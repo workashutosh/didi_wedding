@@ -50,6 +50,15 @@ export const wedding = {
     shloka: ['वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ।', 'निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥'],
   },
 
+  /** the joined-hands scene */
+  hastaMilap: {
+    eyebrow: 'HASTA MILAP',
+    hindi: 'हस्त मिलाप',
+    title: 'Two hands, one lifetime',
+    vowHindi: 'सात फेरे · सात वचन · सात जन्मों का साथ',
+    vowEnglish: 'Seven rounds, seven vows — a bond for seven lifetimes.',
+  },
+
   invitation: {
     blessingLine: 'With the blessings of our elders',
     inviteLine: 'cordially invite you to the wedding of',

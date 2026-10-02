@@ -435,3 +435,39 @@ h2,
 h3 {
   text-wrap: balance;
 }
+
+/* twinkling gold glints */
+.glint {
+  opacity: 0;
+  animation: glint 3.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes glint {
+  0%,
+  62%,
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg);
+  }
+  74% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  86% {
+    opacity: 0;
+    transform: scale(0.3) rotate(90deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glint {
+    animation: none;
+    opacity: 0.6;
+    transform: none;
+  }
+}
+
+/* pale geometric lattice (Varmala / Vivah Sthal theme) */
+.lattice {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g fill='none' stroke='%23c9d6d8' stroke-width='1.4'><path d='M0 16 H16 V0 M48 0 V16 H64 M64 48 H48 V64 M16 64 V48 H0 M16 16 L32 26 L48 16 M16 48 L32 38 L48 48 M16 16 L26 32 L16 48 M48 16 L38 32 L48 48'/></g></svg>");
+  background-size: 64px 64px;
+}

@@ -3,10 +3,10 @@ import { AnimatePresence, m } from 'framer-motion'
 import { visibleEvents, wedding } from '../config/wedding'
 import { googleCalendarUrl } from '../lib/calendar'
 import { Corner, Divider } from '../components/art/Ornaments'
-import { Scallop } from '../components/art/Scallop'
 import { GoldButton } from '../components/GoldButton'
 import { gsap, useGsap } from '../lib/scroll'
 import { reducedMotion } from '../lib/env'
+import couple from '../assets/el-couple.webp'
 
 const TARGET = new Date(wedding.weddingDate.iso).getTime()
 
@@ -101,8 +101,9 @@ export function SaveTheDate() {
 
   useGsap(root, () => {
     if (reducedMotion) return
-    const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: 'top 62%', toggleActions: 'play none none reverse' } })
-    tl.from('.sd-eyebrow', { autoAlpha: 0, y: 20, duration: 0.8 })
+    const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: 'top 70%', toggleActions: 'play none none reverse' } })
+    tl.from('.sd-couple', { autoAlpha: 0, scale: 0.85, y: 30, duration: 1.2, ease: 'expo.out' })
+      .from('.sd-eyebrow', { autoAlpha: 0, y: 20, duration: 0.8 }, 0.3)
       .from('.sd-char', { yPercent: 110, duration: 1.1, stagger: 0.06, ease: 'expo.out' }, 0.1)
       .from('.sd-dot', { scale: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(3)' }, 0.5)
       .from('.sd-week', { autoAlpha: 0, y: 16, duration: 0.9 }, 0.7)
@@ -121,7 +122,6 @@ export function SaveTheDate() {
 
   return (
     <section ref={root} className="section paper grain flex items-center justify-center px-5 py-24" aria-label="Save the date">
-      <Scallop color="#2E060D" className="absolute inset-x-0 top-0" />
       <div className="pointer-events-none absolute inset-3 top-7 border border-gold/50 sm:inset-6 sm:top-8" aria-hidden />
       <div className="pointer-events-none absolute inset-5 top-9 border border-gold/30 sm:inset-8 sm:top-10" aria-hidden />
       <Corner className="sd-corner absolute left-5 top-9 w-14 sm:left-8 sm:top-10 sm:w-20" drawable />
@@ -130,6 +130,15 @@ export function SaveTheDate() {
       <Corner className="sd-corner absolute bottom-5 right-5 w-14 -scale-100 sm:bottom-8 sm:right-8 sm:w-20" drawable />
 
       <div className="relative w-full max-w-2xl text-center">
+        <img
+          src={couple}
+          alt={`Illustration of ${wedding.bride.first} and ${wedding.groom.first} in a ring of flowers`}
+          className="sd-couple float-y mx-auto mb-4 w-[min(62vw,280px)]"
+          loading="lazy"
+          decoding="async"
+          width={965}
+          height={1069}
+        />
         <p className="sd-eyebrow font-display text-sm tracking-[0.3em] text-gold-dark sm:text-lg">SAVE THE DATE</p>
 
         <h2 className="mt-5 font-serif text-[clamp(2.6rem,13.5vw,6.5rem)] font-semibold leading-none tracking-tight text-maroon" aria-label={wedding.weddingDate.long}>

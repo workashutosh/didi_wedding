@@ -4,6 +4,7 @@ import { Toran } from '../components/art/Toran'
 import { Mandala } from '../components/art/Mandala'
 import { WaxSeal } from '../components/art/Ornaments'
 import { haptic, reducedMotion } from '../lib/env'
+import { Sparkles } from '../components/Sparkles'
 import './opening.css'
 
 /** Arched top-panel ornament for each door leaf */
@@ -82,7 +83,8 @@ export function Opening({ onOpen, onDone }: { onOpen: () => void; onDone: () => 
       </div>
 
       <div className="op-content">
-        <header className="op-title">
+        <header className="op-title relative">
+          <Sparkles className="absolute inset-0" count={5} seed={2} />
           <p className="font-hindi text-gold-light text-lg tracking-wide text-glow">॥ शुभ विवाह ॥</p>
           <h1 className="font-script text-[3.4rem] leading-none sm:text-7xl mt-2">
             <span className="gold-foil foil-anim">

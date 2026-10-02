@@ -1,9 +1,13 @@
 import { useRef } from 'react'
 import { wedding } from '../config/wedding'
-import { Jharokha } from '../components/art/Jharokha'
 import { Mandala } from '../components/art/Mandala'
-import { Lotus, Paisley } from '../components/art/Ornaments'
+import { Divider } from '../components/art/Ornaments'
+import bellsL from '../assets/el2-bells-l.webp'
+import bellsR from '../assets/el2-bells-r.webp'
+import peacock from '../assets/el-peacock.webp'
+import lotusPond from '../assets/el2-lotus-pond.webp'
 import { fx, gsap, useGsap } from '../lib/scroll'
+import { Sparkles } from '../components/Sparkles'
 import { reducedMotion } from '../lib/env'
 
 export function Couple() {
@@ -32,7 +36,7 @@ export function Couple() {
       .fromTo('.cp-eyebrow', { autoAlpha: 0, y: -24 }, { autoAlpha: 1, y: 0, duration: 0.4 }, 0.5)
       .fromTo('.cp-arch-l', { y: 160, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, 0.2)
       .fromTo('.cp-arch-r', { y: 160, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, 0.3)
-      .to('.cp-arch .draw', { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' }, 0.2)
+      .fromTo('.cp-bells', { yPercent: -80 }, { yPercent: 0, duration: 0.8, ease: 'power2.out' }, 0)
 
     const tl = gsap.timeline({
       defaults: { ease: 'none', immediateRender: false },
@@ -91,26 +95,34 @@ export function Couple() {
         aria-hidden
       />
       <div className="pin-wrap relative flex flex-col items-center justify-center px-3">
+        {/* temple bells across the top */}
+        <img src={bellsL} alt="" aria-hidden className="cp-bells pointer-events-none absolute -left-[3%] top-0 w-[48vw] max-w-[330px] will-change-transform" loading="lazy" decoding="async" width={520} height={452} />
+        <img src={bellsR} alt="" aria-hidden className="cp-bells pointer-events-none absolute -right-[3%] top-0 w-[48vw] max-w-[330px] will-change-transform" loading="lazy" decoding="async" width={520} height={451} />
         {/* back layer: rotating mandala */}
         <div className="cp-back pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
           <div className="cp-mandala w-[min(135vw,860px)] opacity-0 will-change-transform">
-            <Mandala className="spin-slower h-auto w-full opacity-55" strokeWidth={0.6} />
+            <Mandala className="spin-slower h-auto w-full opacity-30" strokeWidth={0.6} />
           </div>
         </div>
 
-        <p className="cp-eyebrow cp-fade relative mb-3 font-display text-[0.8rem] tracking-[0.35em] text-gold-light sm:text-base">
+        <p className="cp-eyebrow cp-fade relative mb-8 mt-[12vh] sm:mt-[8vh] font-display text-[0.8rem] tracking-[0.35em] text-gold-light sm:text-base">
           SHUBH VIVAH
         </p>
 
         <div className="relative flex w-full max-w-[760px] items-stretch justify-center">
           {/* left arch — bride */}
-          <div className="cp-arch cp-arch-l cp-fade relative w-[47%] max-w-[330px]">
-            <Jharokha className="h-auto w-full" drawable inner="rgba(28,3,7,.55)" />
-            <div className="absolute inset-x-[14%] bottom-[16%] top-[38%] flex flex-col items-center justify-center text-center">
-              <p className="cp-name-l font-script text-[clamp(2.4rem,11.5vw,5.2rem)] leading-[1.15]">
-                <span className="gold-foil foil-anim">{bride.first}</span>
-              </p>
-              <p className="cp-sub mt-1 font-serif text-[0.6rem] uppercase tracking-[0.16em] whitespace-nowrap text-gold-light/80 sm:text-xs">{bride.full}</p>
+          <div className="cp-arch cp-arch-l cp-fade relative w-[46%] max-w-[320px]">
+            <img src={peacock} alt="" aria-hidden className="pointer-events-none absolute -left-[10%] -top-[14%] z-10 w-[40%] max-w-[120px] -scale-x-100" loading="lazy" decoding="async" width={320} height={551} />
+            <div className="rounded-t-[999px] rounded-b-[16px] p-[3px] shadow-[0_24px_50px_-20px_rgba(0,0,0,.7),0_0_40px_rgba(244,163,0,.18)]" style={{ background: 'linear-gradient(160deg, #F3D98B, #B8901F 35%, #FFF1B8 55%, #A37A1C 80%, #E8C967)' }}>
+              <div className="paper relative flex aspect-[3/4.3] flex-col items-center justify-center overflow-hidden rounded-t-[999px] rounded-b-[13px] px-2 pt-[18%] text-center">
+                <div className="pointer-events-none absolute inset-[6px] rounded-t-[999px] rounded-b-[9px] border border-gold/60" aria-hidden />
+                <p className="font-hindi text-[0.8rem] text-gold-dark sm:text-base" lang="hi">वधू</p>
+                <p className="cp-name-l font-script text-[clamp(2.3rem,11vw,4.8rem)] leading-[1.15] text-sindoor">
+                  <span className="maroon-foil">{bride.first}</span>
+                </p>
+                <Divider className="cp-sub my-1 w-[70%]" />
+                <p className="cp-sub font-serif text-[0.55rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/75 sm:text-xs">{bride.full}</p>
+              </div>
             </div>
           </div>
 
@@ -124,17 +136,24 @@ export function Couple() {
           </div>
 
           {/* right arch — groom */}
-          <div className="cp-arch cp-arch-r cp-fade relative w-[47%] max-w-[330px]">
-            <Jharokha className="h-auto w-full" drawable inner="rgba(28,3,7,.55)" />
-            <div className="absolute inset-x-[14%] bottom-[16%] top-[38%] flex flex-col items-center justify-center text-center">
-              <p className="cp-name-r font-script text-[clamp(2.4rem,11.5vw,5.2rem)] leading-[1.15]">
-                <span className="gold-foil foil-anim">{groom.first}</span>
-              </p>
-              <p className="cp-sub mt-1 font-serif text-[0.6rem] uppercase tracking-[0.16em] whitespace-nowrap text-gold-light/80 sm:text-xs">{groom.full}</p>
+          <div className="cp-arch cp-arch-r cp-fade relative w-[46%] max-w-[320px]">
+            <img src={peacock} alt="" aria-hidden className="pointer-events-none absolute -right-[10%] -top-[14%] z-10 w-[40%] max-w-[120px]" loading="lazy" decoding="async" width={320} height={551} />
+            <div className="rounded-t-[999px] rounded-b-[16px] p-[3px] shadow-[0_24px_50px_-20px_rgba(0,0,0,.7),0_0_40px_rgba(244,163,0,.18)]" style={{ background: 'linear-gradient(160deg, #F3D98B, #B8901F 35%, #FFF1B8 55%, #A37A1C 80%, #E8C967)' }}>
+              <div className="paper relative flex aspect-[3/4.3] flex-col items-center justify-center overflow-hidden rounded-t-[999px] rounded-b-[13px] px-2 pt-[18%] text-center">
+                <div className="pointer-events-none absolute inset-[6px] rounded-t-[999px] rounded-b-[9px] border border-gold/60" aria-hidden />
+                <p className="font-hindi text-[0.8rem] text-gold-dark sm:text-base" lang="hi">वर</p>
+                <p className="cp-name-r font-script text-[clamp(2.3rem,11vw,4.8rem)] leading-[1.15] text-sindoor">
+                  <span className="maroon-foil">{groom.first}</span>
+                </p>
+                <Divider className="cp-sub my-1 w-[70%]" />
+                <p className="cp-sub font-serif text-[0.55rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/75 sm:text-xs">{groom.full}</p>
+              </div>
             </div>
           </div>
+
         </div>
 
+        <Sparkles className="cp-tag absolute inset-x-[8%] top-[22%] h-[46%]" count={8} seed={5} />
         <p className="cp-hindi cp-fade relative mt-12 sm:mt-16 font-hindi text-[1.9rem] leading-none sm:text-5xl" lang="hi">
           <span className="gold-foil-static foil-glow">{bride.hindi}</span>
           <span className="mx-3 inline-block align-middle text-[0.6em] text-sindoor drop-shadow-[0_0_8px_rgba(179,18,46,.8)]">❤</span>
@@ -142,11 +161,9 @@ export function Couple() {
         </p>
         <p className="cp-tag cp-fade relative mt-4 font-serif text-sm italic text-ivory/80 sm:text-base">two souls · one sacred journey</p>
 
-        {/* front parallax layer */}
-        <Lotus className="cp-front-a pointer-events-none absolute bottom-[-2%] left-[-8%] w-28 opacity-60 sm:w-40" />
-        <Lotus className="cp-front-b pointer-events-none absolute bottom-[2%] right-[-9%] w-24 opacity-50 sm:w-36" />
-        <Paisley className="cp-front-b pointer-events-none absolute left-[6%] top-[14%] w-7 opacity-50" />
-        <Paisley className="cp-front-a pointer-events-none absolute right-[7%] top-[22%] w-6 -scale-x-100 opacity-50" />
+        {/* front parallax layer: lotus ponds */}
+        <img src={lotusPond} alt="" aria-hidden className="cp-front-a pointer-events-none absolute bottom-[-3%] left-[-6%] w-[30vw] max-w-[200px]" loading="lazy" decoding="async" width={340} height={446} />
+        <img src={lotusPond} alt="" aria-hidden className="cp-front-b pointer-events-none absolute bottom-[-1%] right-[-6%] w-[26vw] max-w-[180px] -scale-x-100" loading="lazy" decoding="async" width={340} height={446} />
       </div>
     </section>
   )
