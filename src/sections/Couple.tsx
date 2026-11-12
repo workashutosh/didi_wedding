@@ -6,7 +6,7 @@ import bellsL from '../assets/el2-bells-l.webp'
 import bellsR from '../assets/el2-bells-r.webp'
 import peacock from '../assets/el-peacock.webp'
 import lotusPond from '../assets/el2-lotus-pond.webp'
-import { fx, gsap, useGsap } from '../lib/scroll'
+import { fx, gsap, ScrollTrigger, useGsap } from '../lib/scroll'
 import { Sparkles } from '../components/Sparkles'
 import { reducedMotion } from '../lib/env'
 
@@ -19,67 +19,32 @@ export function Couple() {
       gsap.from('.cp-fade', { autoAlpha: 0, duration: 1, stagger: 0.2, scrollTrigger: { trigger: root.current, start: 'top 60%' } })
       return
     }
-    let burstDone = false
-
-    // Each property has exactly ONE owning timeline, so fast flings can't
-    // leave two scrubbed timelines fighting over the same value.
-    gsap.set('.cp-arch-l', { xPercent: -38 })
-    gsap.set('.cp-arch-r', { xPercent: 38 })
-
-    // pre-roll: the stage assembles while the section scrolls into view
-    const pre = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: root.current, start: 'top 88%', end: 'top top', scrub: 0.35 },
-    })
-    pre
-      .fromTo('.cp-mandala', { scale: 0.4, autoAlpha: 0, rotate: -50 }, { scale: 0.85, autoAlpha: 1, rotate: 0, duration: 1 }, 0)
-      .fromTo('.cp-eyebrow', { autoAlpha: 0, y: -24 }, { autoAlpha: 1, y: 0, duration: 0.4 }, 0.5)
-      .fromTo('.cp-arch-l', { y: 160, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, 0.2)
-      .fromTo('.cp-arch-r', { y: 160, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out' }, 0.3)
-      .fromTo('.cp-bells', { yPercent: -80 }, { yPercent: 0, duration: 0.8, ease: 'power2.out' }, 0)
-
+    // Plays once, on its own, when the section comes into view — the page never
+    // holds the guest's scroll, and the whole reveal takes about 3 seconds.
     const tl = gsap.timeline({
-      defaults: { ease: 'none', immediateRender: false },
-      scrollTrigger: {
-        trigger: root.current,
-        start: 'top top',
-        end: '+=200%',
-        scrub: 0.35,
-        pin: true,
-        anticipatePin: 1,
+      paused: true,
+      defaults: { ease: 'power3.out' },
+      onComplete: () => {
+        if (!amp.current) return
+        const r = amp.current.getBoundingClientRect()
+        if (r.bottom > 0 && r.top < innerHeight) fx.burst(r.left + r.width / 2, r.top + r.height / 2, 40, true)
       },
     })
-    gsap.set('.cp-name-l, .cp-name-r, .cp-sub, .cp-amp, .cp-hindi, .cp-tag', { autoAlpha: 0 })
-
-    // names glide in from opposite edges
-    tl.fromTo('.cp-name-l', { x: '-70vw', autoAlpha: 0, rotate: -8 }, { x: 0, autoAlpha: 1, rotate: 0, duration: 0.28, ease: 'power3.out' }, 0)
-      .fromTo('.cp-name-r', { x: '70vw', autoAlpha: 0, rotate: 8 }, { x: 0, autoAlpha: 1, rotate: 0, duration: 0.28, ease: 'power3.out' }, 0.05)
-      .fromTo('.cp-sub', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.26)
-      // …and meet in the centre
-      .fromTo('.cp-arch-l', { xPercent: -38 }, { xPercent: 0, duration: 0.24, ease: 'power2.inOut' }, 0.36)
-      .fromTo('.cp-arch-r', { xPercent: 38 }, { xPercent: 0, duration: 0.24, ease: 'power2.inOut' }, 0.36)
-      .fromTo('.cp-back', { scale: 1 }, { scale: 1.25, duration: 0.5 }, 0.36)
-      .fromTo('.cp-amp', { scale: 0, rotate: -120, autoAlpha: 0 }, { scale: 1, rotate: 0, autoAlpha: 1, duration: 0.14, ease: 'back.out(2.2)' }, 0.56)
-      .fromTo('.cp-flash', { scale: 0.2, autoAlpha: 0 }, { scale: 1.6, autoAlpha: 1, duration: 0.08 }, 0.58)
-      .to('.cp-flash', { autoAlpha: 0, scale: 2.2, duration: 0.12 }, 0.66)
-      .call(
-        () => {
-          if (burstDone || !amp.current) return
-          burstDone = true
-          const r = amp.current.getBoundingClientRect()
-          fx.burst(r.left + r.width / 2, r.top + r.height / 2, 46, true)
-        },
-        [],
-        0.6,
-      )
-      .fromTo('.cp-hindi', { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.14, ease: 'power2.out' }, 0.7)
-      .fromTo('.cp-tag', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.78)
-      .to({}, { duration: 0.14 })
-
-    // parallax layers across the whole pinned span
-    tl.fromTo('.cp-back', { y: 40 }, { y: -40, duration: tl.duration() }, 0)
-    tl.fromTo('.cp-front-a', { y: 90 }, { y: -90, duration: tl.duration() }, 0)
-    tl.fromTo('.cp-front-b', { y: 140 }, { y: -60, duration: tl.duration() }, 0)
+    tl.fromTo('.cp-bells', { yPercent: -80 }, { yPercent: 0, duration: 1 }, 0)
+      .fromTo('.cp-mandala', { scale: 0.5, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 1.6 }, 0)
+      .fromTo('.cp-eyebrow', { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.2)
+      .fromTo('.cp-arch-l', { xPercent: -30, y: 80, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 0.2)
+      .fromTo('.cp-arch-r', { xPercent: 30, y: 80, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 0.3)
+      .fromTo('.cp-name-l', { x: -40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.7 }, 0.8)
+      .fromTo('.cp-name-r', { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.7 }, 0.9)
+      .fromTo('.cp-sub', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 1.2)
+      .to('.cp-arch-l, .cp-arch-r', { xPercent: 0, duration: 0.8, ease: 'power2.inOut' }, 1.5)
+      .fromTo('.cp-amp', { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.5, ease: 'back.out(2.2)' }, 2.1)
+      .fromTo('.cp-flash', { scale: 0.2, autoAlpha: 0 }, { scale: 1.6, autoAlpha: 1, duration: 0.25 }, 2.15)
+      .to('.cp-flash', { autoAlpha: 0, scale: 2.2, duration: 0.4 }, 2.4)
+      .fromTo('.cp-hindi', { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 2.3)
+      .fromTo('.cp-tag', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5 }, 2.5)
+    ScrollTrigger.create({ trigger: root.current, start: 'top 65%', once: true, onEnter: () => tl.play() })
   })
 
   const { bride, groom } = wedding
@@ -94,7 +59,7 @@ export function Couple() {
         }}
         aria-hidden
       />
-      <div className="pin-wrap relative flex flex-col items-center justify-center px-3">
+      <div className="relative flex min-h-[100svh] py-16 flex-col items-center justify-center px-3">
         {/* temple bells across the top */}
         <img src={bellsL} alt="" aria-hidden className="cp-bells pointer-events-none absolute -left-[3%] top-0 w-[48vw] max-w-[330px] will-change-transform" loading="lazy" decoding="async" width={520} height={452} />
         <img src={bellsR} alt="" aria-hidden className="cp-bells pointer-events-none absolute -right-[3%] top-0 w-[48vw] max-w-[330px] will-change-transform" loading="lazy" decoding="async" width={520} height={451} />
@@ -105,7 +70,7 @@ export function Couple() {
           </div>
         </div>
 
-        <p className="cp-eyebrow cp-fade relative mb-8 mt-[12vh] sm:mt-[8vh] font-display text-[0.8rem] tracking-[0.35em] text-gold-light sm:text-base">
+        <p className="cp-eyebrow cp-fade relative mb-8 mt-[14vh] sm:mt-[10vh] font-display text-[0.8rem] tracking-[0.35em] text-gold-light sm:text-base">
           SHUBH VIVAH
         </p>
 
@@ -121,7 +86,7 @@ export function Couple() {
                   <span className="maroon-foil">{bride.first}</span>
                 </p>
                 <Divider className="cp-sub my-1 w-[70%]" />
-                <p className="cp-sub font-serif text-[0.55rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/75 sm:text-xs">{bride.full}</p>
+                <p className="cp-sub font-serif text-[0.8rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/85 sm:text-xs">{bride.full}</p>
               </div>
             </div>
           </div>
@@ -146,7 +111,7 @@ export function Couple() {
                   <span className="maroon-foil">{groom.first}</span>
                 </p>
                 <Divider className="cp-sub my-1 w-[70%]" />
-                <p className="cp-sub font-serif text-[0.55rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/75 sm:text-xs">{groom.full}</p>
+                <p className="cp-sub font-serif text-[0.8rem] uppercase tracking-[0.14em] whitespace-nowrap text-maroon/85 sm:text-xs">{groom.full}</p>
               </div>
             </div>
           </div>
@@ -159,7 +124,7 @@ export function Couple() {
           <span className="mx-3 inline-block align-middle text-[0.6em] text-sindoor drop-shadow-[0_0_8px_rgba(179,18,46,.8)]">❤</span>
           <span className="gold-foil-static foil-glow">{groom.hindi}</span>
         </p>
-        <p className="cp-tag cp-fade relative mt-4 font-serif text-sm italic text-ivory/80 sm:text-base">two souls · one sacred journey</p>
+        <p className="cp-tag cp-fade relative mt-4 font-serif text-sm italic text-ivory/90 sm:text-base">two souls · one sacred journey</p>
 
         {/* front parallax layer: lotus ponds */}
         <img src={lotusPond} alt="" aria-hidden className="cp-front-a pointer-events-none absolute bottom-[-3%] left-[-6%] w-[30vw] max-w-[200px]" loading="lazy" decoding="async" width={340} height={446} />

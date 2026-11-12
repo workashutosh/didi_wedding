@@ -12,7 +12,6 @@ import { SaveTheDate } from './sections/SaveTheDate'
 import { Ceremonies } from './sections/Ceremonies'
 import { Venue } from './sections/Venue'
 import { Blessings } from './sections/Blessings'
-import { RSVP } from './sections/RSVP'
 import { Closing } from './sections/Closing'
 
 export default function Experience({ opened }: { opened: boolean }) {
@@ -39,9 +38,6 @@ export default function Experience({ opened }: { opened: boolean }) {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <a href="#rsvp" className="sr-only-focusable fixed left-3 top-3 z-[80] rounded bg-ivory px-3 py-2 text-maroon">
-        Skip to RSVP
-      </a>
       <div className="grain-fixed" aria-hidden />
       <div className="vignette" aria-hidden />
       <ParticleField active={opened} />
@@ -58,9 +54,6 @@ export default function Experience({ opened }: { opened: boolean }) {
         <Ceremonies />
         <Venue />
         <Blessings />
-        <div id="rsvp">
-          <RSVP />
-        </div>
         <Closing />
       </main>
     </LazyMotion>

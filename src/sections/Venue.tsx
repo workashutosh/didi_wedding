@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { wedding } from '../config/wedding'
+import { visibleEvents, wedding } from '../config/wedding'
 import { Divider, MapPin } from '../components/art/Ornaments'
 import { Mandap } from '../components/art/Mandap'
 import { Lantern } from '../components/art/Lantern'
@@ -18,13 +18,14 @@ export function Venue() {
   const root = useRef<HTMLElement>(null)
   const [showMap, setShowMap] = useState(false)
   const { venue } = wedding
+  const main = visibleEvents.find((e) => e.id === 'vivah')
 
   useGsap(root, () => {
     if (reducedMotion) return
     // the mandap assembles itself as it scrolls into view
     const tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: '.vn-arch', start: 'top 85%', end: 'center 45%', scrub: 0.35 },
+      defaults: { ease: 'power2.out', duration: 0.8 },
+      scrollTrigger: { trigger: '.vn-arch', start: 'top 85%', end: 'center 45%', once: true },
     })
     tl.fromTo('.vn-sun', { y: 70, scale: 0.7 }, { y: 0, scale: 1, duration: 1 }, 0)
       .fromTo('.md-land', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25 }, 0)
@@ -120,9 +121,22 @@ export function Venue() {
 
       {/* venue card */}
       <div className="vn-card relative mx-auto mt-10 max-w-xl text-center">
+        <p className="font-hindi text-lg text-sindoor" lang="hi">
+          {venue.hindiName}
+        </p>
         <h3 className="font-display text-2xl font-bold leading-snug text-maroon sm:text-3xl">{venue.name}</h3>
         <Divider className="mx-auto my-3 w-44" />
         <p className="mx-auto max-w-md font-serif text-base leading-relaxed text-maroon/80">{venue.address}</p>
+        <p className="mx-auto mt-1 max-w-md font-hindi text-sm leading-relaxed text-maroon/85" lang="hi">
+          {venue.hindiAddress}
+        </p>
+        <p className="mx-auto mt-4 inline-flex max-w-[92%] items-center gap-2 rounded-full bg-maroon px-5 py-2 text-center font-serif text-sm font-semibold tracking-wide text-gold-light">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" strokeLinecap="round" />
+          </svg>
+          {main?.dateLabel} · {main?.timeLabel}
+        </p>
         <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <GoldButton className="w-full max-w-[290px] sm:w-auto" href={venue.mapUrl} target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>

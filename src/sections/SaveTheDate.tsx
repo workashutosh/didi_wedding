@@ -65,8 +65,8 @@ function UnitFrame({ v, label, hindi }: { v: number; label: string; hindi: strin
           ))}
         </span>
       </div>
-      <span className="mt-2 font-serif text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-maroon sm:text-xs">{label}</span>
-      <span className="font-hindi text-[0.7rem] text-sindoor/80" lang="hi">
+      <span className="mt-2 font-serif text-[0.8rem] font-semibold uppercase tracking-[0.2em] text-maroon sm:text-xs">{label}</span>
+      <span className="font-hindi text-[0.8rem] text-sindoor/80" lang="hi">
         {hindi}
       </span>
     </div>
@@ -96,7 +96,7 @@ function Countdown() {
 
 export function SaveTheDate() {
   const root = useRef<HTMLElement>(null)
-  const main = visibleEvents.find((e) => e.id === 'varmala') ?? visibleEvents[0]
+  const main = visibleEvents.find((e) => e.id === 'vivah') ?? visibleEvents[0]
   const [dd, mm, yyyy] = wedding.weddingDate.numeric
 
   useGsap(root, () => {

@@ -20,9 +20,12 @@ const fold = (line: string) => {
   return out.join('\r\n')
 }
 
+/** India-local calendar date (YYYYMMDD) for all-day events */
+const istDate = (iso: string) => new Date(new Date(iso).getTime() + 5.5 * 3600e3).toISOString().slice(0, 10).replace(/-/g, '')
+
 const couple = (w: Wedding) => `${w.bride.first} & ${w.groom.first}`
 const location = (w: Wedding, e?: WeddingEvent) =>
-  [e?.venue || w.venue.name, w.venue.address].filter(Boolean).join(', ')
+  e?.venue === null ? '' : [e?.venue || w.venue.name, w.venue.address].filter(Boolean).join(', ')
 
 export function buildICS(w: Wedding, events: WeddingEvent[]): string {
   const now = utcStamp(new Date().toISOString())
@@ -39,8 +42,9 @@ export function buildICS(w: Wedding, events: WeddingEvent[]): string {
       'BEGIN:VEVENT',
       `UID:${e.id}-${utcStamp(e.start)}@${w.bride.first.toLowerCase()}-weds-${w.groom.first.toLowerCase()}`,
       `DTSTAMP:${now}`,
-      `DTSTART:${utcStamp(e.start)}`,
-      `DTEND:${utcStamp(e.end)}`,
+      ...(e.allDay
+        ? [`DTSTART;VALUE=DATE:${istDate(e.start)}`, `DTEND;VALUE=DATE:${istDate(e.end)}`]
+        : [`DTSTART:${utcStamp(e.start)}`, `DTEND:${utcStamp(e.end)}`]),
       `SUMMARY:${icsEscape(`${e.name} · ${couple(w)}'s Wedding`)}`,
       `DESCRIPTION:${icsEscape(`${e.description}\n\nDirections: ${w.venue.mapUrl}`)}`,
       `LOCATION:${icsEscape(location(w, e))}`,
@@ -61,7 +65,7 @@ export function googleCalendarUrl(w: Wedding, e: WeddingEvent): string {
   const p = new URLSearchParams({
     action: 'TEMPLATE',
     text: `${couple(w)}'s Wedding · ${e.name}`,
-    dates: `${utcStamp(e.start)}/${utcStamp(e.end)}`,
+    dates: e.allDay ? `${istDate(e.start)}/${istDate(e.end)}` : `${utcStamp(e.start)}/${utcStamp(e.end)}`,
     details: `${e.description}\n\nDirections: ${w.venue.mapUrl}`,
     location: location(w, e),
     ctz: 'Asia/Kolkata',

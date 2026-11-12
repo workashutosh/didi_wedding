@@ -173,7 +173,7 @@ export function Closing() {
         <span className="gold-foil foil-anim">{closing.line}</span>
       </h2>
       <Divider className="cl-fade relative mx-auto my-6 w-56" />
-      <p className="cl-fade relative font-serif text-sm uppercase tracking-[0.3em] text-gold-light/80">{closing.signoff}</p>
+      <p className="cl-fade relative font-serif text-sm uppercase tracking-[0.3em] text-gold-light/95">{closing.signoff}</p>
       <p className="cl-fade relative mt-2 font-display text-lg text-ivory sm:text-xl">{closing.families}</p>
       <p className="cl-fade relative mt-4 font-hindi text-lg text-marigold" lang="hi">
         ॥ शुभम् भवतु ॥
@@ -189,7 +189,7 @@ export function Closing() {
         </svg>
         Relive the invitation
       </button>
-      <p className="relative mt-10 font-serif text-[0.7rem] tracking-[0.2em] text-ivory/60">
+      <p className="relative mt-10 font-serif text-[0.8rem] tracking-[0.2em] text-ivory/90">
         {bride.first.toUpperCase()} &amp; {groom.first.toUpperCase()} · {wedding.weddingDate.numeric.join(' · ')}
       </p>
     </section>

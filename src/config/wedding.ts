@@ -25,8 +25,10 @@ export interface WeddingEvent {
   start: string
   end: string
   description: string
-  /** optional — a different venue for this function */
-  venue?: string
+  /** optional — a different venue for this function; null hides the venue line */
+  venue?: string | null
+  /** no fixed time: shown as a date-only entry (and an all-day calendar event) */
+  allDay?: boolean
 }
 
 export const wedding = {
@@ -35,7 +37,7 @@ export const wedding = {
 
   /** The Shubh Vivah — also the countdown target */
   weddingDate: {
-    iso: '2026-12-09T20:00:00+05:30',
+    iso: '2026-12-09T18:00:00+05:30',
     weekday: 'Wednesday',
     long: '9th December 2026',
     numeric: ['09', '12', '2026'] as const,
@@ -43,7 +45,7 @@ export const wedding = {
   },
 
   /** Who is inviting — appears in "With the blessings of our elders, ___ cordially invite you" */
-  hosts: 'The Mishra & Shukla Families',
+  hosts: 'Shri Chandrashekhar Mishra & Smt. Poonam Mishra',
 
   invocation: {
     title: '॥ श्री गणेशाय नमः ॥',
@@ -60,38 +62,42 @@ export const wedding = {
   },
 
   invitation: {
+    greetingHindi: 'स्नेही स्वजन,',
+    hindi: 'परमपिता परमात्मा की असीम अनुकम्पा एवं स्वजनों की शुभेच्छा से',
     blessingLine: 'With the blessings of our elders',
-    inviteLine: 'cordially invite you to the wedding of',
+    inviteLine: 'cordially invite you to the wedding of their beloved daughter',
   },
 
   /**
-   * Functions / ceremonies. Varmala is confirmed.
-   * Haldi, Mehendi & Sangeet are ready-made — fill in the [ ] and set show: true.
+   * Functions / ceremonies (मांगलिक कार्यक्रम) — as printed on the card.
+   * Mehendi & Sangeet are ready-made extras: fill in and set show: true.
    */
   events: [
     {
-      id: 'varmala',
+      id: 'haldi',
       show: true,
-      name: 'Varmala',
-      hindi: 'वरमाला',
-      icon: 'varmala',
-      dateLabel: 'Wednesday, 9th December 2026',
-      timeLabel: '8:00 PM onwards',
-      start: '2026-12-09T20:00:00+05:30',
-      end: '2026-12-10T01:00:00+05:30',
-      description: 'The exchange of garlands — two hearts, one promise, under a sky of marigolds.',
+      name: 'Shubh Haldi',
+      hindi: 'शुभ हल्दी',
+      icon: 'haldi',
+      dateLabel: 'Tuesday, 8th December 2026',
+      timeLabel: '',
+      allDay: true,
+      start: '2026-12-08T00:00:00+05:30',
+      end: '2026-12-09T00:00:00+05:30',
+      description: 'A day of turmeric, laughter and golden blessings for the bride.',
+      venue: null,
     },
     {
-      id: 'haldi',
-      show: false,
-      name: 'Haldi',
-      hindi: 'हल्दी',
-      icon: 'haldi',
-      dateLabel: '[DAY, DATE]',
-      timeLabel: '[TIME]',
-      start: '2026-12-08T10:00:00+05:30',
-      end: '2026-12-08T13:00:00+05:30',
-      description: 'A morning of turmeric, laughter and golden blessings.',
+      id: 'vivah',
+      show: true,
+      name: 'Vivah & Varmala',
+      hindi: 'शुभ विवाह एवं वरमाला',
+      icon: 'varmala',
+      dateLabel: 'Wednesday, 9th December 2026',
+      timeLabel: '6:00 – 11:30 PM',
+      start: '2026-12-09T18:00:00+05:30',
+      end: '2026-12-09T23:30:00+05:30',
+      description: 'The sacred union and the exchange of garlands — two hearts, one promise, under a sky of marigolds.',
     },
     {
       id: 'mehendi',
@@ -120,14 +126,16 @@ export const wedding = {
   ] satisfies WeddingEvent[] as WeddingEvent[],
 
   venue: {
-    name: 'The Courtyard Lawns',
-    address: 'Ghodbunder Rd, Gowniwada, Owale, Thane West, Thane, Mumbai, Maharashtra 400615',
+    name: 'The Courtyard Banquet Hall',
+    hindiName: 'द कोर्टयार्ड बैंक्वेट हॉल',
+    address: 'Ghodbunder Road No. 1, Gowniwada, Owale, Thane (West) – 400615',
+    hindiAddress: 'घोडबंदर रोड नं. 1, गोवनीवाड़ा, ओवले, ठाणे (पश्चिम) – 400615',
     mapUrl: 'https://maps.app.goo.gl/6gVvYgCmCox2BFoW6',
     /**
      * Optional embedded map. Put the venue name + city here
      * (e.g. "Hotel Name, City"). Leave '' to hide the embedded map.
      */
-    embedQuery: 'The Courtyard Lawns, Ghodbunder Rd, Owale, Thane West, Maharashtra 400615',
+    embedQuery: 'The Courtyard Banquet Hall, Ghodbunder Road, Owale, Thane West, Maharashtra 400615',
   },
 
   blessings: {
@@ -140,29 +148,44 @@ export const wedding = {
     {
       title: "Bride's Family",
       hindi: 'वधू पक्ष',
-      members: [
-        '[Grandparents — e.g. Smt. & Shri ______ Mishra]',
-        '[Parents — e.g. Mrs. & Mr. ______ Mishra]',
-        '[Siblings / family names]',
-      ],
+      members: ['Sushri Sneha Mishra', 'D/o Shri Chandrashekhar Mishra & Smt. Poonam Mishra', 'Thane (West)'],
+      membersHindi: ['आयु. कु. स्नेहा मिश्रा', 'सुपुत्री : श्री चंद्रशेखर मिश्रा एवं पूनम मिश्रा', 'पता : ठाणे (पश्चिम)'],
     },
     {
       title: "Groom's Family",
       hindi: 'वर पक्ष',
-      members: [
-        '[Grandparents — e.g. Smt. & Shri ______ Shukla]',
-        '[Parents — e.g. Mrs. & Mr. ______ Shukla]',
-        '[Siblings / family names]',
-      ],
+      members: ['Chi. Ashok Shukla', 'S/o Shri Kaushal Shukla & Smt. Kusum Shukla', 'Borivali, Mumbai'],
+      membersHindi: ['आयु. चि. अशोक शुक्ला', 'सुपुत्र : कौशल शुक्ला एवं कुसुम शुक्ला', 'पता : बोरिवली, मुंबई'],
     },
   ],
 
+  /** प्रेषक — the sender of the invitation */
+  sender: { title: 'Preshak', hindi: 'प्रेषक', name: 'Ramvriksh Mishra', nameHindi: 'रामवृक्ष मिश्रा' },
+
+  /** दर्शनाभिलाषी — eager to welcome you */
+  darshanabhilashi: {
+    title: 'Darshanabhilashi',
+    hindi: 'दर्शनाभिलाषी',
+    english: 'Eagerly awaiting your presence',
+    names: ['Kripashankar Mishra', 'Chandrakesh Mishra', 'Rajnath Mishra', 'Anand Mishra', 'Ashutosh Mishra', 'Omkarnath Mishra', 'Suraj Mishra'],
+    namesHindi: ['कृपाशंकर मिश्रा', 'चंद्रकेश मिश्रा', 'राजनाथ मिश्रा', 'आनंद मिश्रा', 'आशुतोष मिश्रा', 'ओंकारनाथ मिश्रा', 'सूरज मिश्रा'],
+  },
+
+  /** बाल मंडली — the little ones */
+  balMandali: {
+    title: 'Bal Mandali',
+    hindi: 'बाल मंडली',
+    english: 'The little ones who can’t wait',
+    names: ['Nirvan Mishra', 'Vedika Shukla', 'Harshita Tiwari', 'Priyansh Tiwari'],
+    namesHindi: ['निर्वान मिश्रा', 'वेदिका शुक्ला', 'हर्षिता तिवारी', 'प्रियांश तिवारी'],
+  },
+
   rsvp: {
-    contactName: '[RSVP CONTACT NAME]',
+    contactName: 'Chandrashekhar Mishra',
     /** For the call button, with country code, e.g. '+919876543210' */
-    phone: '[+91XXXXXXXXXX]',
+    phone: '+91 98676 04591',
     /** WhatsApp number — digits only incl. country code, e.g. '919876543210' */
-    whatsapp: '[91XXXXXXXXXX]',
+    whatsapp: '919867604591',
     message: "Namaste! I/we will attend Sneha & Ashok's wedding on 9 Dec.",
     /** optional — e.g. 'Kindly respond by 25th November' ('' to hide) */
     respondBy: '',
@@ -187,7 +210,7 @@ export const wedding = {
     url: '',
     title: 'Sneha weds Ashok · 9 December 2026',
     description:
-      'With the blessings of our elders, you are warmly invited to the wedding of Sneha & Ashok — Wednesday, 9th December 2026. Varmala at 8:00 PM onwards.',
+      'With the blessings of our elders, you are warmly invited to the wedding of Sneha & Ashok — Wednesday, 9th December 2026, 6:00 PM onwards at The Courtyard Banquet Hall, Thane (West).',
   },
 }
 

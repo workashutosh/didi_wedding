@@ -4,14 +4,13 @@ import { Ganesha } from '../components/art/Ganesha'
 import { Diya } from '../components/art/Ornaments'
 import { gsap, useGsap } from '../lib/scroll'
 import { reducedMotion } from '../lib/env'
-import { Words } from '../lib/split'
 
 const DIYAS = 5
 
 export function Ganesh({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement>(null)
 
-  // Scroll-scrubbed: shloka reveals word by word, diyas light one by one
+  // One gentle, time-based intro as the page loads — no scroll-locking.
   useGsap(root, () => {
     if (reducedMotion) {
       gsap.set('.g-lines .draw', { strokeDashoffset: 0 })
@@ -22,43 +21,26 @@ export function Ganesh({ opened }: { opened: boolean }) {
     gsap.set('.g-halo', { autoAlpha: 0, scale: 0.55, transformOrigin: '50% 46%' })
     gsap.set('.g-tilak', { scale: 0, transformOrigin: '50% 50%' })
     gsap.set('.g-lines path[fill]', { fillOpacity: 0 })
-    gsap.set('.shloka .sw', { autoAlpha: 0, y: 14 })
+    gsap.set('.shloka p', { autoAlpha: 0, y: 14 })
     gsap.set('.gn-diya .diya-light', { opacity: 0 })
     gsap.set('.gn-diya', { y: 10, autoAlpha: 0.55 })
-
-    const tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        trigger: root.current,
-        start: 'top top',
-        end: '+=150%',
-        scrub: 0.35,
-        pin: true,
-        anticipatePin: 1,
-      },
-    })
-    tl.to('.gn-hint', { autoAlpha: 0, duration: 0.1 }, 0)
-      .to('.gn-art', { scale: 0.86, y: -10, duration: 1, ease: 'power1.inOut' }, 0)
-      .to('.shloka-0 .sw', { autoAlpha: 1, y: 0, stagger: 0.07, duration: 0.25, ease: 'power2.out' }, 0.05)
-      .to('.shloka-1 .sw', { autoAlpha: 1, y: 0, stagger: 0.07, duration: 0.25, ease: 'power2.out' }, '>-0.05')
-      .to('.gn-diya', { y: 0, autoAlpha: 1, stagger: 0.1, duration: 0.2 }, 0.45)
-      .to('.gn-diya .diya-light', { opacity: 1, stagger: 0.12, duration: 0.14 }, 0.5)
-      .to('.gn-glow', { opacity: 1, scale: 1.15, duration: 0.6 }, 0.5)
-      .to({}, { duration: 0.25 })
+    // the scroll hint disappears as soon as the guest starts scrolling
+    gsap.to('.gn-hint', { autoAlpha: 0, scrollTrigger: { trigger: root.current, start: 'top -40', toggleActions: 'play none none reverse' } })
   })
 
-  // Time-based intro once the doors open
   useEffect(() => {
     if (!opened || reducedMotion || !root.current) return
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.4 })
-      tl.to('.g-halo', { autoAlpha: 1, scale: 1, duration: 2.4, ease: 'expo.out' })
-        .to('.g-lines .draw', { strokeDashoffset: 0, duration: 0.9, stagger: 0.035, ease: 'power2.inOut' }, 0.1)
-        .to('.g-lines path[fill]', { fillOpacity: 0.9, duration: 0.6, stagger: 0.05 }, '-=0.6')
-        .to('.g-tilak', { scale: 1, duration: 0.7, ease: 'back.out(3)' }, '-=0.4')
-        .to('.gn-title', { autoAlpha: 1, y: 0, duration: 1.4, ease: 'expo.out' }, '-=0.5')
-        .fromTo('.gn-title', { scale: 0.86 }, { scale: 1, duration: 2.2, ease: 'expo.out' }, '<')
-        .to('.gn-hint', { autoAlpha: 1, y: 0, duration: 0.8 }, '-=1')
+      const tl = gsap.timeline({ delay: 0.3 })
+      tl.to('.g-halo', { autoAlpha: 1, scale: 1, duration: 2, ease: 'expo.out' })
+        .to('.g-lines .draw', { strokeDashoffset: 0, duration: 0.8, stagger: 0.03, ease: 'power2.inOut' }, 0.1)
+        .to('.g-lines path[fill]', { fillOpacity: 0.9, duration: 0.5, stagger: 0.04 }, '-=0.5')
+        .to('.g-tilak', { scale: 1, duration: 0.6, ease: 'back.out(3)' }, '-=0.4')
+        .to('.gn-title', { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out' }, '-=0.4')
+        .to('.shloka p', { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.3, ease: 'power2.out' }, '-=0.5')
+        .to('.gn-diya', { y: 0, autoAlpha: 1, stagger: 0.12, duration: 0.4 }, '-=0.4')
+        .to('.gn-diya .diya-light', { opacity: 1, stagger: 0.15, duration: 0.3 }, '<0.1')
+        .to('.gn-hint', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.2')
     }, root)
     return () => ctx.revert()
   }, [opened])
@@ -66,7 +48,7 @@ export function Ganesh({ opened }: { opened: boolean }) {
   return (
     <section ref={root} className="section silk grain" aria-label="Shri Ganesh invocation">
       <div className="jaali absolute inset-0 opacity-60" aria-hidden />
-      <div className="pin-wrap relative flex flex-col items-center justify-center px-5 pb-[6svh] pt-[8svh] text-center">
+      <div className="relative flex min-h-[100svh] flex-col items-center justify-center px-5 pb-[6svh] pt-[8svh] text-center">
         <div
           className="gn-glow pointer-events-none absolute left-1/2 top-[38%] h-[90vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50"
           style={{ background: 'radial-gradient(circle, rgba(244,163,0,.28), rgba(179,18,46,.12) 45%, transparent 70%)' }}
@@ -89,10 +71,10 @@ export function Ganesh({ opened }: { opened: boolean }) {
           <span className="gold-foil foil-glow">{wedding.invocation.title}</span>
         </h2>
 
-        <div className="shloka mt-4 space-y-1.5 font-hindi text-[1.02rem] leading-relaxed text-gold-light/95 sm:text-xl">
+        <div className="shloka mt-4 space-y-2 font-hindi text-[1.22rem] leading-relaxed text-[#FFE9A8] sm:text-2xl">
           {wedding.invocation.shloka.map((line, i) => (
             <p key={i} className={`shloka-${i} text-glow`}>
-              <Words text={line} className="sw" />
+              {line}
             </p>
           ))}
         </div>
@@ -105,11 +87,13 @@ export function Ganesh({ opened }: { opened: boolean }) {
           ))}
         </div>
 
-        <div className="gn-hint absolute bottom-[max(18px,env(safe-area-inset-bottom))] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-[0.68rem] uppercase tracking-[0.3em] text-gold-light/75">
-          Scroll
-          <svg viewBox="0 0 20 30" width="16" height="24" aria-hidden className="float-y">
-            <rect x="1" y="1" width="18" height="28" rx="9" fill="none" stroke="currentColor" strokeWidth="1.4" />
-            <circle cx="10" cy="9" r="2.4" fill="currentColor" />
+        <div className="gn-hint absolute bottom-[max(16px,env(safe-area-inset-bottom))] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-center text-gold-light">
+          <span className="font-hindi text-base" lang="hi">
+            नीचे देखें
+          </span>
+          <span className="font-serif text-xs uppercase tracking-[0.2em] opacity-90">Scroll down</span>
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden className="float-y mt-1" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 9l6 6 6-6" />
           </svg>
         </div>
       </div>

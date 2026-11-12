@@ -12,8 +12,8 @@ export function Invitation() {
     if (reducedMotion) return
     gsap.set('.inv-line', { autoAlpha: 0, y: 40 })
     const tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: root.current, start: 'top 92%', end: 'center 55%', scrub: 0.35 },
+      defaults: { ease: 'power2.out', duration: 0.8 },
+      scrollTrigger: { trigger: root.current, start: 'top 92%', end: 'center 55%', once: true },
     })
     tl.to('.inv-kalash .draw', { strokeDashoffset: 0, duration: 0.5 }, 0)
       .fromTo('.inv-kalash', { scale: 0.7, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.4 }, 0)
@@ -46,7 +46,13 @@ export function Invitation() {
 
       <div className="relative mx-auto max-w-xl text-center">
         <Kalash className="inv-kalash mx-auto mb-6 w-20 sm:w-24" drawable />
-        <p className="inv-line font-serif text-lg italic text-gold-light sm:text-2xl">{wedding.invitation.blessingLine},</p>
+        <p className="inv-line font-hindi text-lg text-gold-light/90 sm:text-xl" lang="hi">
+          {wedding.invitation.greetingHindi}
+        </p>
+        <p className="inv-line mx-auto mt-2 max-w-md font-hindi text-xl leading-relaxed text-gold-light sm:text-2xl" lang="hi">
+          {wedding.invitation.hindi}
+        </p>
+        <p className="inv-line mt-4 font-serif text-lg italic text-ivory/85 sm:text-2xl">{wedding.invitation.blessingLine},</p>
         <Divider className="inv-divider inv-line mx-auto my-6 w-56 sm:w-72" drawable />
         <p className="inv-line font-serif text-[1.55rem] font-semibold leading-snug sm:text-4xl">
           <span className="gold-foil">{wedding.hosts}</span>

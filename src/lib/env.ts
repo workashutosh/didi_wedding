@@ -13,7 +13,7 @@ export const lowEnd =
   (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 3 || !!nav.connection?.saveData
 
 /** Particle budget multiplier */
-export const fxBudget = reducedMotion ? 0 : lowEnd ? 0.45 : isSmall ? 0.7 : 1
+export const fxBudget = reducedMotion ? 0 : lowEnd ? 0.3 : isSmall ? 0.55 : 1
 
 export const haptic = (ms = 12) => {
   try {

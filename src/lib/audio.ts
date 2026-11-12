@@ -71,6 +71,14 @@ export const music = {
   },
 }
 
+// hide the music button until we know the track actually exists
+if (typeof window !== 'undefined') {
+  set({ available: false })
+  fetch(wedding.music.src, { method: 'HEAD' })
+    .then((r) => set({ available: r.ok && /audio|mpeg|octet/.test(r.headers.get('content-type') ?? '') }))
+    .catch(() => {})
+}
+
 // pause when the tab is hidden, resume when visible again
 if (typeof document !== 'undefined') {
   let resume = false

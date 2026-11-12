@@ -15,11 +15,12 @@ import sitar from '../assets/el-sitar.webp'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const WEEKDAYS = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+const WEEKDAYS_HI = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार']
 
 /** date parts in India time, regardless of the guest's timezone */
 function parts(iso: string) {
   const d = new Date(new Date(iso).getTime() + 5.5 * 3600e3)
-  return { day: String(d.getUTCDate()).padStart(2, '0'), mon: MONTHS[d.getUTCMonth()], year: d.getUTCFullYear(), wk: WEEKDAYS[d.getUTCDay()] }
+  return { day: String(d.getUTCDate()).padStart(2, '0'), mon: MONTHS[d.getUTCMonth()], year: d.getUTCFullYear(), wk: WEEKDAYS[d.getUTCDay()], wkHi: WEEKDAYS_HI[d.getUTCDay()] }
 }
 
 function ArchCard({ e }: { e: WeddingEvent }) {
@@ -31,7 +32,7 @@ function ArchCard({ e }: { e: WeddingEvent }) {
         <div className="paper relative overflow-hidden rounded-t-[999px] rounded-b-[15px] px-4 pb-9 pt-[22%] text-center sm:px-6">
           <div className="pointer-events-none absolute inset-[7px] rounded-t-[999px] rounded-b-[11px] border border-gold/50" aria-hidden />
           <Ganesha className="mx-auto w-14 [filter:brightness(.62)_saturate(1.5)]" />
-          <h3 className="mt-3 font-script text-[3.3rem] leading-none text-sindoor">{e.name}</h3>
+          <h3 className="mt-3 font-script text-[clamp(2.5rem,11vw,3.3rem)] leading-[1.05] text-sindoor">{e.name}</h3>
           <p className="mt-1 font-hindi text-lg text-maroon/80" lang="hi">
             {e.hindi}
           </p>
@@ -39,18 +40,32 @@ function ArchCard({ e }: { e: WeddingEvent }) {
 
           {/* date row, like a printed card */}
           <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sindoor">
-            <div className="border-y border-sindoor/60 py-1.5 font-serif text-[0.6rem] font-semibold tracking-[0.08em] sm:text-[0.7rem] sm:tracking-[0.18em]">{p.wk}</div>
+            <div className="border-y border-sindoor/60 py-1.5 font-serif text-[0.8rem] font-semibold tracking-[0.08em] sm:text-[0.8rem] sm:tracking-[0.18em]">{p.wk}</div>
             <div className="px-1 leading-none">
               <div className="font-serif text-xs tracking-[0.3em]">{p.mon}</div>
               <div className="font-display text-[2.6rem] font-bold leading-none">{p.day}</div>
               <div className="font-serif text-xs tracking-[0.3em]">{p.year}</div>
             </div>
-            <div className="border-y border-sindoor/60 py-1.5 font-serif text-[0.6rem] font-semibold uppercase tracking-[0.06em] sm:text-[0.7rem] sm:tracking-[0.12em]">{e.timeLabel}</div>
+            {e.timeLabel ? (
+              <div className="border-y border-sindoor/60 py-1.5 font-serif text-[0.8rem] font-semibold uppercase tracking-[0.06em] sm:text-[0.8rem] sm:tracking-[0.12em]">{e.timeLabel}</div>
+            ) : (
+              <div className="border-y border-sindoor/60 py-1 font-hindi text-sm" lang="hi">
+                {p.wkHi}
+              </div>
+            )}
           </div>
 
           <Divider className="mx-auto my-5 w-40" />
-          <p className="font-serif text-[0.7rem] uppercase tracking-[0.22em] text-maroon/60">at</p>
-          <p className="mt-1 font-display text-base font-bold text-maroon">{e.venue || wedding.venue.name}</p>
+          {e.venue === null ? (
+            <p className="font-hindi text-base text-maroon/80" lang="hi">
+              मंगल बेला में आपका स्वागत है
+            </p>
+          ) : (
+            <>
+              <p className="font-serif text-[0.8rem] uppercase tracking-[0.22em] text-maroon/85">at</p>
+              <p className="mt-1 font-display text-base font-bold text-maroon">{e.venue || wedding.venue.name}</p>
+            </>
+          )}
         </div>
       </div>
     </article>
@@ -64,8 +79,8 @@ export function Ceremonies() {
     gsap.from('.ev-head > *', { autoAlpha: 0, y: 24, stagger: 0.12, duration: 1, scrollTrigger: { trigger: '.ev-head', start: 'top 80%' } })
     if (reducedMotion) return
     const tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: '.ev-stage', start: 'top 85%', end: 'center 50%', scrub: 0.35 },
+      defaults: { ease: 'power2.out', duration: 0.8 },
+      scrollTrigger: { trigger: '.ev-stage', start: 'top 85%', end: 'center 50%', once: true },
     })
     tl.fromTo('.ev-arch', { y: 90, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, ease: 'power2.out', stagger: 0.1 }, 0)
       .fromTo('.ev-lotus-l', { xPercent: -60, rotate: -14, autoAlpha: 0 }, { xPercent: 0, rotate: 0, autoAlpha: 1, duration: 0.45, ease: 'power2.out' }, 0.15)
@@ -116,7 +131,7 @@ export function Ceremonies() {
             <ArchCard key={e.id} e={e} />
           ))}
           <img src={peacock} alt="" aria-hidden className="ev-peacock-t pointer-events-none will-change-transform absolute -right-[9%] -top-[8%] w-[30%] max-w-[150px] sm:-right-[16%]" loading="lazy" decoding="async" width={464} height={799} />
-          <img src={peacock} alt="" aria-hidden className="ev-peacock-b pointer-events-none will-change-transform absolute -bottom-[7%] -left-[8%] w-[27%] max-w-[140px] -scale-x-100 sm:-left-[16%]" loading="lazy" decoding="async" width={464} height={799} />
+          <img src={peacock} alt="" aria-hidden className="ev-peacock-b pointer-events-none will-change-transform absolute -bottom-[11%] -left-[8%] w-[27%] max-w-[140px] -scale-x-100 sm:-left-[16%]" loading="lazy" decoding="async" width={464} height={799} />
         </div>
       </div>
 

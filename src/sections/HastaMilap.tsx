@@ -7,7 +7,7 @@ import { Mandala } from '../components/art/Mandala'
 import { Divider } from '../components/art/Ornaments'
 import { Scallop } from '../components/art/Scallop'
 import { Sparkles } from '../components/Sparkles'
-import { fx, gsap, useGsap } from '../lib/scroll'
+import { fx, gsap, ScrollTrigger, useGsap } from '../lib/scroll'
 import { reducedMotion } from '../lib/env'
 
 /** Hasta milap — the hands glide in and clasp as you scroll. */
@@ -18,38 +18,32 @@ export function HastaMilap() {
 
   useGsap(root, () => {
     if (reducedMotion) return
-    let burst = false
     const stageW = () => (root.current?.querySelector('.hm-stage') as HTMLElement | null)?.offsetWidth ?? 600
-    const tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: { trigger: root.current, start: 'top top', end: '+=150%', scrub: 0.35, pin: true, anticipatePin: 1, invalidateOnRefresh: true },
-    })
+    // plays once, on its own, when the hands come into view (no scroll-locking)
     gsap.set('.hm-head > *, .hm-vow, .hm-glow, .hm-ring', { autoAlpha: 0 })
-    tl.fromTo('.hm-head > *', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.18, immediateRender: false }, 0)
-      // his hand (and the thumb layer that closes over her fingertips) moves as one
-      .fromTo('.hd-groom', { x: () => stageW() * 0.36 }, { x: 0, duration: 0.55, ease: 'power2.out' }, 0.05)
-      .fromTo('.hd-bride', { x: () => -stageW() * 0.4, y: () => -stageW() * 0.05, rotate: -4, transformOrigin: '0% 50%' }, { x: 0, y: 0, rotate: 0, duration: 0.55, ease: 'power2.out' }, 0.08)
-      .fromTo('.hm-glow', { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.18, immediateRender: false }, 0.58)
-      .fromTo('.hm-ring', { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.2, ease: 'back.out(2)', immediateRender: false }, 0.6)
-      .call(
-        () => {
-          if (burst || !hands.current) return
-          burst = true
-          const r = hands.current.getBoundingClientRect()
-          fx.burst(r.left + r.width * 0.57, r.top + r.height * 0.42, 44, true)
-        },
-        [],
-        0.62,
-      )
-      .fromTo('.hm-vow', { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, stagger: 0.07, duration: 0.18, immediateRender: false }, 0.72)
-      .to({}, { duration: 0.1 })
+    const tl = gsap.timeline({
+      paused: true,
+      defaults: { ease: 'power2.out' },
+      onComplete: () => {
+        if (!hands.current) return
+        const r = hands.current.getBoundingClientRect()
+        if (r.bottom > 0 && r.top < innerHeight) fx.burst(r.left + r.width * 0.57, r.top + r.height * 0.42, 36, true)
+      },
+    })
+    tl.to('.hm-head > *', { autoAlpha: 1, y: 0, stagger: 0.15, duration: 0.6 }, 0)
+      .fromTo('.hd-groom', { x: () => stageW() * 0.36 }, { x: 0, duration: 1.6 }, 0.2)
+      .fromTo('.hd-bride', { x: () => -stageW() * 0.4, y: () => -stageW() * 0.05, rotate: -4, transformOrigin: '0% 50%' }, { x: 0, y: 0, rotate: 0, duration: 1.6 }, 0.25)
+      .fromTo('.hm-glow', { scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.6 }, 1.7)
+      .fromTo('.hm-ring', { scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.6, ease: 'back.out(2)' }, 1.75)
+      .fromTo('.hm-vow', { y: 16 }, { autoAlpha: 1, y: 0, stagger: 0.15, duration: 0.6 }, 2)
+    ScrollTrigger.create({ trigger: '.hm-stage', start: 'top 80%', once: true, onEnter: () => tl.play() })
     gsap.to('.hm-mandala', { rotate: 40, ease: 'none', scrollTrigger: { trigger: root.current, start: 'top bottom', end: 'bottom top', scrub: true } })
   })
 
   return (
     <section ref={root} className="section paper grain" aria-label="Hasta milap — joined hands">
       <Scallop color="#2E060D" className="absolute inset-x-0 top-0 z-10" />
-      <div className="pin-wrap relative flex flex-col items-center justify-center px-4 text-center">
+      <div className="relative flex min-h-[100svh] py-16 flex-col items-center justify-center px-4 text-center">
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
           <Mandala className="hm-mandala w-[min(130vw,880px)] opacity-[0.16] will-change-transform" filled={false} />
         </div>

@@ -29,10 +29,11 @@ export function Blessings() {
     })
     gsap.from('.bl-sub', { autoAlpha: 0, y: 16, stagger: 0.15, duration: 0.9, scrollTrigger: { trigger: '.bl-head', start: 'top 70%' } })
     // elephants walk in to honour the couple
-    const walk = { trigger: '.bl-procession', start: 'top 92%', end: 'center 60%', scrub: 0.35 }
+    const walk = { trigger: '.bl-procession', start: 'top 92%', end: 'center 60%', once: true }
     gsap.fromTo('.bl-ele-l', { xPercent: -120, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, ease: 'power2.out', scrollTrigger: walk })
     gsap.fromTo('.bl-ele-r', { xPercent: 120, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, ease: 'power2.out', scrollTrigger: walk })
     gsap.fromTo('.bl-doli', { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, ease: 'power2.out', scrollTrigger: walk })
+    gsap.from('.bl-sender > *', { autoAlpha: 0, y: 18, stagger: 0.12, duration: 0.9, scrollTrigger: { trigger: '.bl-sender', start: 'top 88%' } })
     gsap.utils.toArray<HTMLElement>('.bl-family').forEach((el) => {
       gsap.from(el.querySelectorAll('.bl-fade'), {
         autoAlpha: 0,
@@ -45,13 +46,13 @@ export function Blessings() {
     // bells drop in and keep swinging gently
     gsap.from('.bl-bells', { yPercent: -70, duration: 1.4, ease: 'elastic.out(1, 0.55)', scrollTrigger: { trigger: root.current, start: 'top 75%' } })
     gsap.to('.bl-bells', { rotate: 2.5, transformOrigin: '50% 0%', duration: 2.6, ease: 'sine.inOut', yoyo: true, repeat: -1, stagger: 0.7 })
-    const tie = { trigger: '.bl-knot', start: 'top 95%', end: 'center 65%', scrub: 0.35 }
+    const tie = { trigger: '.bl-knot', start: 'top 95%', end: 'center 65%', once: true }
     gsap.fromTo('.bl-knot', { scale: 0.5, autoAlpha: 0, rotate: -8 }, { scale: 1, autoAlpha: 1, rotate: 0, ease: 'back.out(2)', scrollTrigger: tie })
     gsap.fromTo('.bl-pond', { xPercent: -50, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, scrollTrigger: tie })
     gsap.fromTo('.bl-stem', { xPercent: 50, autoAlpha: 0, rotate: 10 }, { xPercent: 0, autoAlpha: 1, rotate: 0, scrollTrigger: tie })
   })
 
-  const { blessings, families, hosts } = wedding
+  const { blessings, families, sender, darshanabhilashi, balMandali } = wedding
 
   return (
     <section ref={root} className="section relative px-5 pb-24 pt-[min(42vw,230px)]" style={{ background: '#f3f7f7' }} aria-label="Blessings and family">
@@ -96,13 +97,20 @@ export function Blessings() {
                   </p>
                   <h3 className="bl-fade mt-1 font-script text-[2.6rem] leading-tight text-maroon">{f.title}</h3>
                   <Divider className="bl-fade mx-auto my-3 w-36" />
-                  <ul className="space-y-2 font-serif text-[0.98rem] text-maroon/85">
-                    {f.members.map((m) => (
-                      <li key={m} className="bl-fade">
-                        {m}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="bl-fade font-hindi text-2xl leading-tight text-sindoor" lang="hi">
+                    {f.membersHindi[0]}
+                  </p>
+                  <p className="bl-fade mt-0.5 font-display text-sm font-bold tracking-wide text-maroon">{f.members[0]}</p>
+                  <p className="bl-fade mt-4 font-hindi text-[1.02rem] leading-snug text-maroon/90" lang="hi">
+                    {f.membersHindi[1]}
+                  </p>
+                  <p className="bl-fade mt-0.5 font-serif text-sm italic text-maroon/85">{f.members[1]}</p>
+                  <p className="bl-fade mt-4 inline-flex items-center gap-1.5 rounded-full border border-gold/60 px-3 py-1 font-serif text-xs font-semibold tracking-wide text-gold-dark">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden>
+                      <path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
+                    </svg>
+                    {f.members[2]} · <span className="font-hindi" lang="hi">{f.membersHindi[2].replace('पता : ', '')}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -111,7 +119,44 @@ export function Blessings() {
         <img src={gathbandhan} alt="" aria-hidden className="bl-knot pointer-events-none relative z-20 mx-auto -mt-6 w-[min(70vw,360px)] will-change-transform sm:-mt-10" loading="lazy" decoding="async" width={560} height={301} />
       </div>
 
-      <p className="relative z-20 mx-auto mt-14 max-w-xl text-center font-serif text-base italic text-maroon/80 sm:mt-8">With warm regards — {hosts}</p>
+      {/* दर्शनाभिलाषी · बाल मंडली · प्रेषक */}
+      <div className="relative z-20 mx-auto mt-12 grid max-w-4xl gap-6 sm:mt-10 sm:grid-cols-[1.4fr_1fr]">
+        {[darshanabhilashi, balMandali].map((g) => (
+          <div key={g.title} className="bl-family relative">
+            <div className="rounded-[22px] p-[2px] shadow-[0_22px_44px_-26px_rgba(90,15,27,.45)]" style={{ background: 'linear-gradient(160deg, #F3D98B, #B8901F 35%, #FFF1B8 55%, #A37A1C 80%, #E8C967)' }}>
+              <div className="paper relative h-full rounded-[20px] px-5 py-7 text-center">
+                <div className="pointer-events-none absolute inset-[6px] rounded-[16px] border border-gold/45" aria-hidden />
+                <p className="bl-fade font-hindi text-2xl text-sindoor" lang="hi">
+                  ❖ {g.hindi} ❖
+                </p>
+                <p className="bl-fade mt-0.5 font-serif text-[0.8rem] uppercase tracking-[0.24em] text-gold-dark">{g.english}</p>
+                <ul className="mt-4 flex flex-wrap justify-center gap-2">
+                  {g.names.map((n, i) => (
+                    <li key={n} className="bl-fade rounded-full border border-maroon/15 bg-white/50 px-3 py-1.5 leading-tight">
+                      <span className="block font-hindi text-[1.02rem] text-maroon" lang="hi">
+                        {g.namesHindi[i]}
+                      </span>
+                      <span className="block font-serif text-[0.8rem] italic text-maroon/85">{n}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bl-sender relative z-20 mx-auto mt-10 max-w-xl text-center">
+        <p className="font-hindi text-xl text-gold-dark" lang="hi">
+          ❖ {sender.hindi} ❖
+        </p>
+        <p className="mt-1 font-hindi text-3xl text-sindoor" lang="hi">
+          {sender.nameHindi}
+        </p>
+        <p className="mt-0.5 font-serif text-sm italic text-maroon/85">
+          {sender.title} · {sender.name}
+        </p>
+      </div>
     </section>
   )
 }
