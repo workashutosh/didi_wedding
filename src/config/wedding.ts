@@ -41,7 +41,7 @@ export const wedding = {
     weekday: 'Wednesday',
     long: '9th December 2026',
     numeric: ['09', '12', '2026'] as const,
-    hindi: 'बुधवार, ९ दिसम्बर २०२६',
+    hindi: 'बुधवार, 9 दिसम्बर 2026',
   },
 
   /** Who is inviting — appears in "With the blessings of our elders, ___ cordially invite you" */
