@@ -5,13 +5,11 @@ import { reducedMotion } from './lib/env'
 import { ParticleField } from './components/ParticleField'
 import { MusicToggle, PointerFX, ScrollProgress } from './components/Chrome'
 import { Ganesh } from './sections/Ganesh'
-import { Invitation } from './sections/Invitation'
 import { Couple } from './sections/Couple'
 import { HastaMilap } from './sections/HastaMilap'
 import { SaveTheDate } from './sections/SaveTheDate'
 import { Ceremonies } from './sections/Ceremonies'
 import { Venue } from './sections/Venue'
-import { Blessings } from './sections/Blessings'
 import { Closing } from './sections/Closing'
 
 export default function Experience({ opened }: { opened: boolean }) {
@@ -47,13 +45,11 @@ export default function Experience({ opened }: { opened: boolean }) {
 
       <main className="relative">
         <Ganesh opened={opened} />
-        <Invitation />
         <Couple />
         <HastaMilap />
         <SaveTheDate />
         <Ceremonies />
         <Venue />
-        <Blessings />
         <Closing />
       </main>
     </LazyMotion>
